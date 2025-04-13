@@ -1,30 +1,33 @@
-name: Python CI
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main  
-  pull_request:
-    branches:
-      - main  
+      - main  # Ou a branch que você está usando
+
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Node.js (caso você use Node.js)
+        uses: actions/setup-node@v2
         with:
-          python-version: '3.9'  
+          node-version: '14'  # Ajuste conforme sua versão do Node.js
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Certifique-se de ter um arquivo requirements.txt
+          npm install  # Ou o comando que você usa para instalar dependências
 
-      - name: Run tests
+      - name: Build static content (se necessário)
         run: |
-          pytest  # ou qualquer outro comando para rodar seus testes
+          npm run build  # Ajuste esse comando se precisar compilar algo
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build  # Ou o diretório onde está o arquivo final (HTML, CSS)
